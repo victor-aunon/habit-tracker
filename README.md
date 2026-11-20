@@ -10,6 +10,7 @@ A production-grade, local-first daily habit and streak tracking application buil
 > This entire codebase was **engineered 100% autonomously** using the **[speckit-viteplus-stitch-bundle](https://github.com/victor-aunon/speckit-viteplus-stitch-bundle)** Spec-Driven Development (SDD) workflow.
 >
 > The agent orchestrated and executed the complete software engineering lifecycle without manual coding:
+>
 > 1. **Specification & Domain Modeling**: Requirements breakdown, schema definition, and contract creation (`specs/001-habit-streak-tracker/contracts/`).
 > 2. **Design-to-Code Synthesis**: Pixel-accurate translation of Google Stitch design mockups into responsive, accessible components.
 > 3. **Hexagonal Architecture**: Strict separation of concerns (Domain Models, Application Services, Ports & Adapters, Presentation Layer).

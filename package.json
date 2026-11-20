@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vp dev",
     "test": "vitest run --passWithNoTests",
-    "build": "vite build",
+    "build": "vp build",
     "check-quality": "bash .specify/scripts/bash/check-quality-gate.sh",
     "verify-design": "bash .specify/scripts/bash/verify-stitch-design.sh"
   },

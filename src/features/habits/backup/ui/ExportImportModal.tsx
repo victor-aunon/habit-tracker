@@ -8,12 +8,7 @@ export interface ExportImportModalProps {
   readonly onImport: (jsonContent: string) => Promise<{ success: boolean; message: string }>;
 }
 
-export function ExportImportModal({
-  isOpen,
-  onClose,
-  onExport,
-  onImport,
-}: ExportImportModalProps) {
+export function ExportImportModal({ isOpen, onClose, onExport, onImport }: ExportImportModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -118,8 +113,8 @@ export function ExportImportModal({
           <section className="rounded-xl border border-border bg-surface-subtle p-4">
             <h3 className="text-sm font-semibold text-text">Export Backup</h3>
             <p className="mt-1 text-xs text-text-muted">
-              Download a JSON file containing all your habits and completion history to keep a backup or
-              transfer to another device.
+              Download a JSON file containing all your habits and completion history to keep a
+              backup or transfer to another device.
             </p>
             <button
               type="button"
@@ -136,8 +131,8 @@ export function ExportImportModal({
           <section className="rounded-xl border border-border bg-surface-subtle p-4">
             <h3 className="text-sm font-semibold text-text">Import Backup</h3>
             <p className="mt-1 text-xs text-text-muted">
-              Select a previously exported JSON backup file. This action will restore and replace the
-              current data in this browser.
+              Select a previously exported JSON backup file. This action will restore and replace
+              the current data in this browser.
             </p>
 
             <form onSubmit={handleImportSubmit} className="mt-3 space-y-3">

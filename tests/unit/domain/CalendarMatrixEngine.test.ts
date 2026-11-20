@@ -6,7 +6,9 @@ describe('CalendarMatrixEngine', () => {
   it('generates a grid starting on Monday with 35 or 42 cells', () => {
     // November 2026: Nov 1 is Sunday.
     // Monday start: Oct 26 is Monday. 5 weeks = 35 days (Oct 26 - Nov 29), so Nov 30 requires a 6th week = 42 cells.
-    const habits = [createHabit({ id: 'h-1', title: 'Exercise', createdAt: '2026-11-01T00:00:00.000Z' })];
+    const habits = [
+      createHabit({ id: 'h-1', title: 'Exercise', createdAt: '2026-11-01T00:00:00.000Z' }),
+    ];
     const completionMap = new Map<string, string[]>();
 
     const matrix = generateMonthlyMatrix({
@@ -24,7 +26,11 @@ describe('CalendarMatrixEngine', () => {
   });
 
   it('correctly assigns completion statuses', () => {
-    const h1 = createHabit({ id: 'h-1', title: 'Drink Water', createdAt: '2026-11-01T00:00:00.000Z' });
+    const h1 = createHabit({
+      id: 'h-1',
+      title: 'Drink Water',
+      createdAt: '2026-11-01T00:00:00.000Z',
+    });
     const h2 = createHabit({ id: 'h-2', title: 'Walk', createdAt: '2026-11-01T00:00:00.000Z' });
     const habits = [h1, h2];
 

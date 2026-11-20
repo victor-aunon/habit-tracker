@@ -5,24 +5,14 @@ import { ExportImportModal } from '../../src/features/habits/backup/ui/ExportImp
 describe('ExportImportModal Integration', () => {
   it('does not render when isOpen is false', () => {
     render(
-      <ExportImportModal
-        isOpen={false}
-        onClose={vi.fn()}
-        onExport={vi.fn()}
-        onImport={vi.fn()}
-      />,
+      <ExportImportModal isOpen={false} onClose={vi.fn()} onExport={vi.fn()} onImport={vi.fn()} />,
     );
     expect(screen.queryByTestId('backup-modal')).toBeNull();
   });
 
   it('renders modal with export and import controls when open', () => {
     render(
-      <ExportImportModal
-        isOpen={true}
-        onClose={vi.fn()}
-        onExport={vi.fn()}
-        onImport={vi.fn()}
-      />,
+      <ExportImportModal isOpen={true} onClose={vi.fn()} onExport={vi.fn()} onImport={vi.fn()} />,
     );
     expect(screen.getByTestId('backup-modal')).toBeDefined();
     expect(screen.getByTestId('export-backup-button')).toBeDefined();
@@ -32,12 +22,7 @@ describe('ExportImportModal Integration', () => {
   it('calls onExport when clicking export button', () => {
     const onExport = vi.fn();
     render(
-      <ExportImportModal
-        isOpen={true}
-        onClose={vi.fn()}
-        onExport={onExport}
-        onImport={vi.fn()}
-      />,
+      <ExportImportModal isOpen={true} onClose={vi.fn()} onExport={onExport} onImport={vi.fn()} />,
     );
 
     fireEvent.click(screen.getByTestId('export-backup-button'));
@@ -49,12 +34,7 @@ describe('ExportImportModal Integration', () => {
     const onClose = vi.fn();
 
     render(
-      <ExportImportModal
-        isOpen={true}
-        onClose={onClose}
-        onExport={vi.fn()}
-        onImport={onImport}
-      />,
+      <ExportImportModal isOpen={true} onClose={onClose} onExport={vi.fn()} onImport={onImport} />,
     );
 
     const validJson = JSON.stringify({
@@ -87,12 +67,7 @@ describe('ExportImportModal Integration', () => {
     });
 
     render(
-      <ExportImportModal
-        isOpen={true}
-        onClose={vi.fn()}
-        onExport={vi.fn()}
-        onImport={onImport}
-      />,
+      <ExportImportModal isOpen={true} onClose={vi.fn()} onExport={vi.fn()} onImport={onImport} />,
     );
 
     const invalidContent = '{"invalid": true}';

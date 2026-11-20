@@ -43,7 +43,9 @@ describe('LocalStorage Repositories - Backup Support (getAll & restore)', () => 
 
       const all = await repo.getAll();
       expect(all.data).toHaveLength(2);
-      expect(all.data?.map((h) => h.id)).toEqual(expect.arrayContaining(['restored-1', 'restored-2']));
+      expect(all.data?.map((h) => h.id)).toEqual(
+        expect.arrayContaining(['restored-1', 'restored-2']),
+      );
 
       const raw = localStorage.getItem(HABIT_STORAGE_KEY);
       expect(raw).toBeDefined();
