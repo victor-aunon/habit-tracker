@@ -40,3 +40,21 @@ jobs:
           name: dist-bundle
           path: dist/
           retention-days: 7
+
+  # --- JOB 2: DEPLOY TO DOKPLOY (only on main push) ---
+  deploy-dokploy:
+    name: Deploy to Dokploy
+    needs: test-and-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Dokploy
+        uses: dokploy/github-action@v1
+        with:
+          dokploy-url: ${{ secrets.DOKPLOY_URL }}
+          api-key: ${{ secrets.DOKPLOY_API_KEY }}
+          project-name: habit-tracker
+          application-name: habit-tracker-app
