@@ -1,0 +1,315 @@
+{
+  "year": 2026,
+  "month": 11,
+  "monthName": "November 2026",
+  "selectedDate": "2026-11-17",
+  "summary": {
+    "totalTrackedDays": 18,
+    "perfectDays": 11,
+    "partialDays": 5,
+    "missedDays": 2
+  },
+  "days": [
+    {
+      "date": "2026-11-01",
+      "dayOfMonth": 1,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-02",
+      "dayOfMonth": 2,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-03",
+      "dayOfMonth": 3,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "PARTIALLY_COMPLETED",
+      "completedCount": 2,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-04",
+      "dayOfMonth": 4,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-05",
+      "dayOfMonth": 5,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-06",
+      "dayOfMonth": 6,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "PARTIALLY_COMPLETED",
+      "completedCount": 1,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-07",
+      "dayOfMonth": 7,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "NONE_COMPLETED",
+      "completedCount": 0,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-08",
+      "dayOfMonth": 8,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-09",
+      "dayOfMonth": 9,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-10",
+      "dayOfMonth": 10,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 3
+    },
+    {
+      "date": "2026-11-11",
+      "dayOfMonth": 11,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 4,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-12",
+      "dayOfMonth": 12,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "PARTIALLY_COMPLETED",
+      "completedCount": 3,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-13",
+      "dayOfMonth": 13,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 4,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-14",
+      "dayOfMonth": 14,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "PARTIALLY_COMPLETED",
+      "completedCount": 2,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-15",
+      "dayOfMonth": 15,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "NONE_COMPLETED",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-16",
+      "dayOfMonth": 16,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 4,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-17",
+      "dayOfMonth": 17,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "ALL_COMPLETED",
+      "completedCount": 4,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-18",
+      "dayOfMonth": 18,
+      "isCurrentMonth": true,
+      "isToday": true,
+      "status": "PARTIALLY_COMPLETED",
+      "completedCount": 2,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-19",
+      "dayOfMonth": 19,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-20",
+      "dayOfMonth": 20,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-21",
+      "dayOfMonth": 21,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-22",
+      "dayOfMonth": 22,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-23",
+      "dayOfMonth": 23,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-24",
+      "dayOfMonth": 24,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-25",
+      "dayOfMonth": 25,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-26",
+      "dayOfMonth": 26,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-27",
+      "dayOfMonth": 27,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-28",
+      "dayOfMonth": 28,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-29",
+      "dayOfMonth": 29,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "date": "2026-11-30",
+      "dayOfMonth": 30,
+      "isCurrentMonth": true,
+      "isToday": false,
+      "status": "FUTURE",
+      "completedCount": 0,
+      "totalCount": 4
+    }
+  ],
+  "dayInspection": {
+    "date": "2026-11-17",
+    "dayOfWeek": "Tuesday",
+    "completionStatus": "ALL_COMPLETED",
+    "completedHabits": [
+      {
+        "id": "habit-1",
+        "title": "Drink 2L Water",
+        "completed": true,
+        "completedAt": "2026-11-17T10:15:00.000Z"
+      },
+      {
+        "id": "habit-2",
+        "title": "Morning 20m Run",
+        "completed": true,
+        "completedAt": "2026-11-17T07:45:00.000Z"
+      },
+      {
+        "id": "habit-3",
+        "title": "Read 15 Pages of Book",
+        "completed": true,
+        "completedAt": "2026-11-17T22:10:00.000Z"
+      },
+      {
+        "id": "habit-4",
+        "title": "Meditate 10 Minutes",
+        "completed": true,
+        "completedAt": "2026-11-17T08:30:00.000Z"
+      }
+    ]
+  }
+}

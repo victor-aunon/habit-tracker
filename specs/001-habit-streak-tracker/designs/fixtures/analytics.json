@@ -1,0 +1,77 @@
+{
+  "weekStartDate": "2026-11-16",
+  "weekEndDate": "2026-11-22",
+  "label": "Week 47 (Nov 16 - Nov 22, 2026)",
+  "metrics": {
+    "totalScheduled": 21,
+    "totalCompleted": 14,
+    "completionRatePercentage": 67,
+    "bestDayOfWeek": "Tuesday",
+    "bestDayRatePercentage": 100,
+    "activeHabitsTracked": 3,
+    "streakShieldsEarned": 2
+  },
+  "dailyBreakdown": [
+    {
+      "dayOfWeek": "Monday",
+      "shortDay": "Mon",
+      "date": "2026-11-16",
+      "completedCount": 3,
+      "scheduledCount": 3,
+      "ratePercentage": 100
+    },
+    {
+      "dayOfWeek": "Tuesday",
+      "shortDay": "Tue",
+      "date": "2026-11-17",
+      "completedCount": 3,
+      "scheduledCount": 3,
+      "ratePercentage": 100
+    },
+    {
+      "dayOfWeek": "Wednesday",
+      "shortDay": "Wed",
+      "date": "2026-11-18",
+      "completedCount": 2,
+      "scheduledCount": 3,
+      "ratePercentage": 67
+    },
+    {
+      "dayOfWeek": "Thursday",
+      "shortDay": "Thu",
+      "date": "2026-11-19",
+      "completedCount": 2,
+      "scheduledCount": 3,
+      "ratePercentage": 67
+    },
+    {
+      "dayOfWeek": "Friday",
+      "shortDay": "Fri",
+      "date": "2026-11-20",
+      "completedCount": 2,
+      "scheduledCount": 3,
+      "ratePercentage": 67
+    },
+    {
+      "dayOfWeek": "Saturday",
+      "shortDay": "Sat",
+      "date": "2026-11-21",
+      "completedCount": 1,
+      "scheduledCount": 3,
+      "ratePercentage": 33
+    },
+    {
+      "dayOfWeek": "Sunday",
+      "shortDay": "Sun",
+      "date": "2026-11-22",
+      "completedCount": 1,
+      "scheduledCount": 3,
+      "ratePercentage": 33
+    }
+  ],
+  "categoryBreakdown": [
+    { "category": "Health", "completed": 6, "scheduled": 7, "ratePercentage": 86 },
+    { "category": "Fitness", "completed": 5, "scheduled": 7, "ratePercentage": 71 },
+    { "category": "Learning", "completed": 3, "scheduled": 7, "ratePercentage": 43 }
+  ]
+}

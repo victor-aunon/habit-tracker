@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Habit & Streak Tracker - Habit Management & Safeguards</title>
+    <link rel="stylesheet" href="./tokens.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Top Navigation Header */
+      .header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4) var(--space-8);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        text-decoration: none;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        list-style: none;
+      }
+
+      .nav-link {
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        transition:
+          background-color var(--transition-fast),
+          color var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      .nav-link.active {
+        background-color: var(--color-primary-subtle);
+        color: var(--color-primary);
+      }
+
+      .timestamp-badge {
+        font-size: var(--font-size-xs);
+        font-family: var(--font-family-mono);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border-subtle);
+      }
+
+      /* Main Container */
+      main {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+      }
+
+      /* Storage Error Alert Banner */
+      .alert-banner {
+        background-color: var(--color-warning-subtle);
+        border: 1px solid var(--color-warning);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        color: var(--color-text);
+      }
+
+      .alert-content {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-size: var(--font-size-sm);
+      }
+
+      .alert-btn {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-sm);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        cursor: pointer;
+      }
+
+      /* Split Showcase Grid */
+      .modals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+        gap: var(--space-8);
+      }
+
+      /* Modal Card Container (Presentation Frame) */
+      .modal-frame {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        padding: var(--space-5) var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .modal-title {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+      }
+
+      .modal-body {
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
+
+      .modal-footer {
+        padding: var(--space-4) var(--space-6);
+        background-color: var(--color-surface-subtle);
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-3);
+      }
+
+      /* Form Controls */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .form-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .char-counter {
+        font-family: var(--font-family-mono);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        background-color: var(--color-surface-subtle);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--space-3) var(--space-4);
+        color: var(--color-text);
+        font-family: var(--font-family);
+        font-size: var(--font-size-sm);
+        transition:
+          border-color var(--transition-fast),
+          box-shadow var(--transition-fast);
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-focus);
+      }
+
+      .form-input.is-invalid {
+        border-color: var(--color-danger);
+      }
+
+      .form-hint {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+      }
+
+      .form-error {
+        font-size: var(--font-size-xs);
+        color: var(--color-danger);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-sm);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+      }
+
+      .btn-primary {
+        background-color: var(--color-primary);
+        color: var(--color-primary-foreground);
+      }
+      .btn-primary:hover {
+        background-color: var(--color-primary-hover);
+      }
+
+      .btn-danger {
+        background-color: var(--color-danger);
+        color: var(--color-danger-foreground);
+      }
+      .btn-danger:hover {
+        background-color: var(--color-danger-hover);
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+      }
+      .btn-ghost:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      /* Category Tag Selector */
+      .tag-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+
+      .tag-pill {
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border-subtle);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .tag-pill.active {
+        background-color: var(--color-primary-subtle);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+
+      /* Delete Warning Box */
+      .warning-box {
+        background-color: var(--color-danger-subtle);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        display: flex;
+        gap: var(--space-3);
+      }
+
+      .warning-icon {
+        font-size: var(--font-size-xl);
+        color: var(--color-danger);
+      }
+
+      .warning-text h4 {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-danger);
+        margin-bottom: var(--space-1);
+      }
+
+      .warning-text p {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+        line-height: var(--line-height-normal);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="header" role="banner">
+      <div class="header-container">
+        <a href="/" class="brand" aria-label="HabitPulse Dashboard Home">
+          <div class="brand-icon" aria-hidden="true">⚡</div>
+          <span>HabitPulse</span>
+        </a>
+
+        <nav aria-label="Main Navigation">
+          <ul class="nav-links">
+            <li><a href="/" class="nav-link">Dashboard</a></li>
+            <li><a href="/calendar" class="nav-link">Calendar</a></li>
+            <li><a href="/analytics" class="nav-link">Analytics</a></li>
+            <li><a href="/habits/manage" class="nav-link active" aria-current="page">Manage</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <span class="timestamp-badge" data-testid="current-timestamp"
+            >Wednesday, Nov 18, 2026</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Management Viewport -->
+    <main data-testid="management-view" role="main">
+      <!-- Non-Blocking Persistence Resilience Banner (FR-021) -->
+      <div
+        class="alert-banner"
+        data-testid="storage-error-alert"
+        role="alert"
+        aria-live="assertive"
+      >
+        <div class="alert-content">
+          <span aria-hidden="true">⚠️</span>
+          <div>
+            <strong>Storage Quota Warning:</strong> Browser storage sync is operating in
+            session-memory mode. Changes are preserved in memory.
+          </div>
+        </div>
+        <button type="button" class="alert-btn" aria-label="Retry local storage synchronization">
+          Retry Sync
+        </button>
+      </div>
+
+      <!-- Modals Showcase Grid -->
+      <div class="modals-grid">
+        <!-- Modal 1: Habit Creation Form with Boundary Safeguards -->
+        <section class="modal-frame" aria-labelledby="create-habit-modal-title">
+          <div class="modal-header">
+            <h2 id="create-habit-modal-title" class="modal-title">Create New Habit</h2>
+            <button type="button" class="btn btn-ghost" aria-label="Close dialog">✕</button>
+          </div>
+
+          <form class="modal-body" onsubmit="return false;">
+            <!-- Habit Title (1-100 characters) -->
+            <div class="form-group">
+              <label for="habit-title-input" class="form-label">
+                <span>Habit Title *</span>
+                <span class="char-counter">24 / 100</span>
+              </label>
+              <input
+                type="text"
+                id="habit-title-input"
+                class="form-input"
+                data-testid="habit-input-title"
+                value="Evening 15m Meditation"
+                maxlength="100"
+                required
+                aria-describedby="title-hint"
+                placeholder="e.g., Read 20 pages, Walk 10,000 steps"
+              />
+              <span id="title-hint" class="form-hint">
+                Trimmed automatically. Must be unique among active habits (1 to 100 chars).
+              </span>
+            </div>
+
+            <!-- Category Tag Selector -->
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <div class="tag-pills" role="radiogroup" aria-label="Category Selection">
+                <button type="button" class="tag-pill" role="radio" aria-checked="false">
+                  Health
+                </button>
+                <button type="button" class="tag-pill" role="radio" aria-checked="false">
+                  Fitness
+                </button>
+                <button type="button" class="tag-pill" role="radio" aria-checked="false">
+                  Learning
+                </button>
+                <button type="button" class="tag-pill active" role="radio" aria-checked="true">
+                  Mindfulness
+                </button>
+                <button type="button" class="tag-pill" role="radio" aria-checked="false">
+                  Productivity
+                </button>
+              </div>
+            </div>
+
+            <!-- Optional Description -->
+            <div class="form-group">
+              <label for="habit-desc-input" class="form-label">Description (Optional)</label>
+              <textarea
+                id="habit-desc-input"
+                class="form-textarea"
+                rows="2"
+                placeholder="Add personal motivation or reminder notes..."
+              >
+Wind down before bed with guided breathwork</textarea>
+            </div>
+          </form>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-testid="habit-submit-button">
+              Save Habit
+            </button>
+          </div>
+        </section>
+
+        <!-- Modal 2: Habit Deletion Safeguard Dialog (FR-002) -->
+        <section class="modal-frame" aria-labelledby="delete-habit-modal-title">
+          <div class="modal-header">
+            <h2 id="delete-habit-modal-title" class="modal-title">Delete Habit Confirmation</h2>
+            <button type="button" class="btn btn-ghost" aria-label="Close deletion dialog">
+              ✕
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="warning-box">
+              <span class="warning-icon" aria-hidden="true">⚠️</span>
+              <div class="warning-text">
+                <h4>Irreversible Active Tracking Removal</h4>
+                <p>
+                  Are you sure you want to delete <strong>"Morning 20m Run"</strong>? This habit
+                  will be removed from your active daily checklist. Historical completions remain
+                  archived for calendar integrity.
+                </p>
+              </div>
+            </div>
+
+            <p style="font-size: var(--font-size-xs); color: var(--color-text-muted)">
+              Current streak: 12 days · All-time best: 21 days
+            </p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" data-testid="delete-cancel-button">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-danger" data-testid="delete-confirm-button">
+              Confirm Deletion
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

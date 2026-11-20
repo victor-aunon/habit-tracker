@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Habit & Streak Tracker - Monthly Calendar History</title>
+    <link rel="stylesheet" href="./tokens.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Top Navigation Header */
+      .header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4) var(--space-8);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        text-decoration: none;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        list-style: none;
+      }
+
+      .nav-link {
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        transition:
+          background-color var(--transition-fast),
+          color var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      .nav-link.active {
+        background-color: var(--color-primary-subtle);
+        color: var(--color-primary);
+      }
+
+      .timestamp-badge {
+        font-size: var(--font-size-xs);
+        font-family: var(--font-family-mono);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border-subtle);
+      }
+
+      /* Main Container */
+      main {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+      }
+
+      /* Calendar Controls Bar */
+      .calendar-controls-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        padding-bottom: var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .calendar-title-group h1 {
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -0.02em;
+      }
+
+      .calendar-month-selector {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .btn-nav {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: var(--font-size-base);
+        transition:
+          background-color var(--transition-fast),
+          border-color var(--transition-fast);
+      }
+
+      .btn-nav:hover {
+        background-color: var(--color-surface-hover);
+        border-color: var(--color-primary);
+      }
+
+      .month-display {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        min-width: 180px;
+        text-align: center;
+      }
+
+      .btn-today {
+        background-color: var(--color-surface-elevated);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        cursor: pointer;
+      }
+
+      /* Legend Bar */
+      .legend-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-3) var(--space-5);
+        font-size: var(--font-size-xs);
+      }
+
+      .legend-items {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-secondary);
+      }
+
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+      }
+
+      .dot-all {
+        background-color: var(--color-success);
+      }
+      .dot-partial {
+        background-color: var(--color-warning);
+      }
+      .dot-none {
+        background-color: var(--color-danger);
+      }
+      .dot-future {
+        background-color: var(--color-text-muted);
+      }
+
+      /* Layout: Grid + Inspection Panel */
+      .calendar-content-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: var(--space-6);
+        align-items: start;
+      }
+
+      @media (max-width: 960px) {
+        .calendar-content-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Calendar Grid */
+      .calendar-grid-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .weekdays-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: var(--space-2);
+        text-align: center;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: var(--space-2);
+      }
+
+      .calendar-day-cell {
+        aspect-ratio: 1 / 1;
+        background-color: var(--color-surface-subtle);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-md);
+        padding: var(--space-2);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        color: var(--color-text);
+        transition: all var(--transition-fast);
+        position: relative;
+      }
+
+      .calendar-day-cell:hover:not(.future) {
+        background-color: var(--color-surface-hover);
+        border-color: var(--color-primary);
+        transform: scale(1.02);
+      }
+
+      .calendar-day-cell.selected {
+        border: 2px solid var(--color-primary);
+        background-color: var(--color-primary-subtle);
+        box-shadow: 0 0 0 1px var(--color-primary);
+      }
+
+      .calendar-day-cell.today {
+        position: relative;
+      }
+
+      .calendar-day-cell.today::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 6px;
+        height: 6px;
+        background-color: var(--color-primary);
+        border-radius: var(--radius-full);
+      }
+
+      .calendar-day-cell.future {
+        cursor: not-allowed;
+        opacity: 0.4;
+        background-color: transparent;
+      }
+
+      .cell-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .cell-number {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .cell-status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+      }
+
+      .cell-badge {
+        font-size: 10px;
+        font-family: var(--font-family-mono);
+        font-weight: var(--font-weight-semibold);
+        align-self: flex-end;
+      }
+
+      .cell-status-all {
+        border-color: rgba(16, 185, 129, 0.4);
+        background-color: rgba(16, 185, 129, 0.08);
+      }
+      .cell-status-all .cell-status-indicator {
+        background-color: var(--color-success);
+      }
+      .cell-status-all .cell-badge {
+        color: var(--color-success);
+      }
+
+      .cell-status-partial {
+        border-color: rgba(245, 158, 11, 0.4);
+        background-color: rgba(245, 158, 11, 0.08);
+      }
+      .cell-status-partial .cell-status-indicator {
+        background-color: var(--color-warning);
+      }
+      .cell-status-partial .cell-badge {
+        color: var(--color-warning);
+      }
+
+      .cell-status-none {
+        border-color: rgba(239, 68, 68, 0.3);
+        background-color: rgba(239, 68, 68, 0.05);
+      }
+      .cell-status-none .cell-status-indicator {
+        background-color: var(--color-danger);
+      }
+      .cell-status-none .cell-badge {
+        color: var(--color-danger);
+      }
+
+      /* Day Inspection Panel */
+      .day-detail-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--color-border-subtle);
+        padding-bottom: var(--space-3);
+      }
+
+      .panel-title {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+      }
+
+      .panel-badge-all {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .habit-check-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+
+      .habit-check-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3);
+        background-color: var(--color-surface-subtle);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-sm);
+      }
+
+      .check-icon {
+        color: var(--color-success);
+        font-weight: bold;
+      }
+
+      .check-time {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+        font-family: var(--font-family-mono);
+      }
+
+      /* Empty state */
+      .empty-state {
+        display: none;
+        background-color: var(--color-surface);
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-12) var(--space-8);
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-4);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="header" role="banner">
+      <div class="header-container">
+        <a href="/" class="brand" aria-label="HabitPulse Dashboard Home">
+          <div class="brand-icon" aria-hidden="true">⚡</div>
+          <span>HabitPulse</span>
+        </a>
+
+        <nav aria-label="Main Navigation">
+          <ul class="nav-links">
+            <li><a href="/" class="nav-link">Dashboard</a></li>
+            <li><a href="/calendar" class="nav-link active" aria-current="page">Calendar</a></li>
+            <li><a href="/analytics" class="nav-link">Analytics</a></li>
+            <li><a href="/habits/manage" class="nav-link">Manage</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <span class="timestamp-badge" data-testid="current-timestamp"
+            >Wednesday, Nov 18, 2026</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Calendar Viewport -->
+    <main data-testid="calendar-view" role="main">
+      <!-- Controls Bar: Title & Month Navigation -->
+      <section class="calendar-controls-bar" aria-labelledby="calendar-heading">
+        <div class="calendar-title-group">
+          <h1 id="calendar-heading">Monthly History</h1>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm)">
+            Track completion density across days and review historical consistency
+          </p>
+        </div>
+
+        <div class="calendar-month-selector" role="group" aria-label="Month selection controls">
+          <button
+            type="button"
+            class="btn-nav"
+            data-testid="calendar-prev-month"
+            aria-label="Previous month, October 2026"
+          >
+            ‹
+          </button>
+
+          <span class="month-display" aria-live="polite">November 2026</span>
+
+          <button
+            type="button"
+            class="btn-nav"
+            data-testid="calendar-next-month"
+            aria-label="Next month, December 2026"
+          >
+            ›
+          </button>
+
+          <button type="button" class="btn-today" aria-label="Jump to current date">Today</button>
+        </div>
+      </section>
+
+      <!-- Legend & Monthly KPI Summary -->
+      <section class="legend-bar" aria-label="Calendar Legend">
+        <div class="legend-items">
+          <span class="legend-item"><span class="legend-dot dot-all"></span> All Completed</span>
+          <span class="legend-item"
+            ><span class="legend-dot dot-partial"></span> Partially Completed</span
+          >
+          <span class="legend-item"><span class="legend-dot dot-none"></span> None Completed</span>
+          <span class="legend-item"><span class="legend-dot dot-future"></span> Upcoming Date</span>
+        </div>
+        <div style="color: var(--color-text-secondary); font-size: var(--font-size-xs)">
+          November: <strong>11 Perfect Days</strong> · 5 Partial · 2 Missed
+        </div>
+      </section>
+
+      <!-- Calendar Layout: Monthly Grid + Day Detail Inspection Panel -->
+      <section class="calendar-content-layout">
+        <!-- Calendar Grid Card -->
+        <article class="calendar-grid-card">
+          <div class="weekdays-header" role="row">
+            <span role="columnheader">Mon</span>
+            <span role="columnheader">Tue</span>
+            <span role="columnheader">Wed</span>
+            <span role="columnheader">Thu</span>
+            <span role="columnheader">Fri</span>
+            <span role="columnheader">Sat</span>
+            <span role="columnheader">Sun</span>
+          </div>
+
+          <div
+            class="calendar-grid"
+            data-testid="calendar-grid"
+            role="grid"
+            aria-label="November 2026 Grid"
+          >
+            <!-- Nov 1 (Sunday) offset padding if starting Mon -->
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 1, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">1</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 2, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">2</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-partial"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 3, 2026: Partially completed (2/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">3</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">2/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 4, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">4</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 5, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">5</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-partial"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 6, 2026: Partially completed (1/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">6</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">1/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-none"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 7, 2026: None completed (0/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">7</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">0/3</span>
+            </div>
+
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 8, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">8</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 9, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">9</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 10, 2026: All completed (3/3)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">10</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/3</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 11, 2026: All completed (4/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">11</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">4/4</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-partial"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 12, 2026: Partially completed (3/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">12</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">3/4</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 13, 2026: All completed (4/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">13</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">4/4</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-partial"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 14, 2026: Partially completed (2/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">14</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">2/4</span>
+            </div>
+
+            <div
+              class="calendar-day-cell cell-status-none"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 15, 2026: None completed (0/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">15</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">0/4</span>
+            </div>
+            <div
+              class="calendar-day-cell cell-status-all"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-label="November 16, 2026: All completed (4/4)"
+            >
+              <div class="cell-top">
+                <span class="cell-number">16</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">4/4</span>
+            </div>
+            <!-- Selected Day: Nov 17 -->
+            <div
+              class="calendar-day-cell cell-status-all selected"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-selected="true"
+              aria-label="November 17, 2026: All completed (4/4) - Selected"
+            >
+              <div class="cell-top">
+                <span class="cell-number">17</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">4/4</span>
+            </div>
+            <!-- Today: Nov 18 -->
+            <div
+              class="calendar-day-cell cell-status-partial today"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-current="date"
+              aria-label="November 18, 2026: Partially completed (2/4) - Today"
+            >
+              <div class="cell-top">
+                <span class="cell-number">18</span><span class="cell-status-indicator"></span>
+              </div>
+              <span class="cell-badge">2/4</span>
+            </div>
+            <!-- Future Days -->
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+              aria-label="November 19, 2026: Upcoming"
+            >
+              <div class="cell-top"><span class="cell-number">19</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+              aria-label="November 20, 2026: Upcoming"
+            >
+              <div class="cell-top"><span class="cell-number">20</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+              aria-label="November 21, 2026: Upcoming"
+            >
+              <div class="cell-top"><span class="cell-number">21</span></div>
+            </div>
+
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">22</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">23</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">24</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">25</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">26</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">27</span></div>
+            </div>
+            <div
+              class="calendar-day-cell future"
+              data-testid="calendar-day-cell"
+              role="gridcell"
+              aria-disabled="true"
+            >
+              <div class="cell-top"><span class="cell-number">28</span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Day Detail Inspection Panel -->
+        <aside
+          class="day-detail-panel"
+          data-testid="day-detail-panel"
+          aria-label="Selected Date Inspection"
+        >
+          <div class="panel-header">
+            <div>
+              <span
+                style="
+                  font-size: var(--font-size-xs);
+                  color: var(--color-text-muted);
+                  text-transform: uppercase;
+                "
+                >Selected Date</span
+              >
+              <h2 class="panel-title">Tuesday, Nov 17, 2026</h2>
+            </div>
+            <span class="panel-badge-all">100% (4/4)</span>
+          </div>
+
+          <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary)">
+            All scheduled habits were completed for this day.
+          </p>
+
+          <div class="habit-check-list">
+            <div class="habit-check-item">
+              <div>
+                <span class="check-icon">✓</span>
+                <strong>Drink 2L Water</strong>
+              </div>
+              <span class="check-time">10:15 AM</span>
+            </div>
+
+            <div class="habit-check-item">
+              <div>
+                <span class="check-icon">✓</span>
+                <strong>Morning 20m Run</strong>
+              </div>
+              <span class="check-time">07:45 AM</span>
+            </div>
+
+            <div class="habit-check-item">
+              <div>
+                <span class="check-icon">✓</span>
+                <strong>Read 15 Pages of Book</strong>
+              </div>
+              <span class="check-time">10:10 PM</span>
+            </div>
+
+            <div class="habit-check-item">
+              <div>
+                <span class="check-icon">✓</span>
+                <strong>Meditate 10 Minutes</strong>
+              </div>
+              <span class="check-time">08:30 AM</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Empty State Fallback -->
+      <div class="empty-state" data-testid="empty-state-calendar" aria-hidden="true">
+        <h3>No History to Display</h3>
+        <p style="color: var(--color-text-secondary)">
+          Calendar history will populate as you create and check off habits.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Habit & Streak Tracker - Weekly Analytics</title>
+    <link rel="stylesheet" href="./tokens.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Top Navigation Header */
+      .header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4) var(--space-8);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        text-decoration: none;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        list-style: none;
+      }
+
+      .nav-link {
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        transition:
+          background-color var(--transition-fast),
+          color var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      .nav-link.active {
+        background-color: var(--color-primary-subtle);
+        color: var(--color-primary);
+      }
+
+      .timestamp-badge {
+        font-size: var(--font-size-xs);
+        font-family: var(--font-family-mono);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border-subtle);
+      }
+
+      /* Main Container */
+      main {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+      }
+
+      /* Header Bar */
+      .analytics-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        padding-bottom: var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .analytics-title-group h1 {
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -0.02em;
+      }
+
+      .week-nav-group {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .btn-nav {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: var(--font-size-base);
+        transition: background-color var(--transition-fast);
+      }
+
+      .btn-nav:hover {
+        background-color: var(--color-surface-hover);
+        border-color: var(--color-primary);
+      }
+
+      .week-label {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        background-color: var(--color-surface);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+      }
+
+      /* KPI Summary Cards */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-5);
+      }
+
+      .metric-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .metric-card.accent-rate::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+      }
+
+      .metric-card.accent-best::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-streak-fire), var(--color-streak-gold));
+      }
+
+      .metric-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .metric-value-row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+      }
+
+      .metric-big-value {
+        font-size: var(--font-size-4xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        letter-spacing: -0.02em;
+      }
+
+      .metric-subtext {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+      }
+
+      .metric-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        width: fit-content;
+      }
+
+      .badge-success {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+      }
+
+      .badge-fire {
+        background-color: var(--color-streak-fire-subtle);
+        color: var(--color-streak-fire);
+      }
+
+      /* Distribution Chart Card */
+      .chart-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+      }
+
+      .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .chart-title {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+      }
+
+      /* Bar Chart Visual */
+      .bar-chart-container {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: var(--space-4);
+        align-items: end;
+        height: 220px;
+        padding-top: var(--space-8);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .bar-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        justify-content: flex-end;
+        gap: var(--space-2);
+      }
+
+      .bar-track {
+        width: 100%;
+        max-width: 48px;
+        height: 160px;
+        background-color: var(--color-surface-elevated);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .bar-fill {
+        width: 100%;
+        background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        transition: height var(--transition-slow);
+      }
+
+      .bar-fill.highlight {
+        background: linear-gradient(180deg, var(--color-success), var(--color-success-hover));
+      }
+
+      .bar-rate-tag {
+        position: absolute;
+        top: 6px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 11px;
+        font-family: var(--font-family-mono);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+      }
+
+      .bar-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        text-align: center;
+      }
+
+      .bar-sublabel {
+        font-size: 10px;
+        color: var(--color-text-muted);
+        font-family: var(--font-family-mono);
+      }
+
+      /* Category Breakdown List */
+      .category-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-4);
+      }
+
+      .category-card {
+        background-color: var(--color-surface-subtle);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .category-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .category-progress {
+        width: 100%;
+        height: 6px;
+        background-color: var(--color-surface-elevated);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+      }
+
+      .category-progress-bar {
+        height: 100%;
+        background-color: var(--color-primary);
+        border-radius: var(--radius-full);
+      }
+
+      /* Empty State Fallback */
+      .empty-state {
+        display: none;
+        background-color: var(--color-surface);
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-12) var(--space-8);
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-4);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="header" role="banner">
+      <div class="header-container">
+        <a href="/" class="brand" aria-label="HabitPulse Dashboard Home">
+          <div class="brand-icon" aria-hidden="true">⚡</div>
+          <span>HabitPulse</span>
+        </a>
+
+        <nav aria-label="Main Navigation">
+          <ul class="nav-links">
+            <li><a href="/" class="nav-link">Dashboard</a></li>
+            <li><a href="/calendar" class="nav-link">Calendar</a></li>
+            <li><a href="/analytics" class="nav-link active" aria-current="page">Analytics</a></li>
+            <li><a href="/habits/manage" class="nav-link">Manage</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <span class="timestamp-badge" data-testid="current-timestamp"
+            >Wednesday, Nov 18, 2026</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Analytics Viewport -->
+    <main data-testid="analytics-view" role="main">
+      <!-- Header & Week Navigation -->
+      <section class="analytics-header-bar" aria-labelledby="analytics-heading">
+        <div class="analytics-title-group">
+          <h1 id="analytics-heading">Weekly Performance</h1>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm)">
+            Rolling 7-day completion analysis and consistency milestones
+          </p>
+        </div>
+
+        <div class="week-nav-group" role="group" aria-label="Weekly timeframe navigation">
+          <button type="button" class="btn-nav" aria-label="Previous week">‹</button>
+          <span class="week-label" aria-live="polite">Nov 16 - Nov 22, 2026</span>
+          <button
+            type="button"
+            class="btn-nav"
+            aria-label="Next week"
+            disabled
+            style="opacity: 0.5; cursor: not-allowed"
+          >
+            ›
+          </button>
+        </div>
+      </section>
+
+      <!-- Key Performance Indicator Cards -->
+      <section class="kpi-grid" aria-label="Key Weekly Metrics">
+        <!-- Metric Card 1: Completion Rate (Acceptance Scenario: 14 of 21 = 67%) -->
+        <article class="metric-card accent-rate" data-testid="analytics-rate-card">
+          <span class="metric-label">Weekly Completion Rate</span>
+          <div class="metric-value-row">
+            <span class="metric-big-value">67%</span>
+            <span class="metric-subtext">14 of 21 completed</span>
+          </div>
+          <span class="metric-badge badge-success"> ▲ +12% vs last week </span>
+        </article>
+
+        <!-- Metric Card 2: Most Consistent Day -->
+        <article class="metric-card accent-best" data-testid="analytics-best-day">
+          <span class="metric-label">Most Consistent Day</span>
+          <div class="metric-value-row">
+            <span class="metric-big-value">Tuesday</span>
+            <span class="metric-subtext">100% adherence</span>
+          </div>
+          <span class="metric-badge badge-fire"> 🔥 Perfect 3 / 3 completed </span>
+        </article>
+
+        <!-- Metric Card 3: Active Habit Routines -->
+        <article class="metric-card">
+          <span class="metric-label">Active Tracked Routines</span>
+          <div class="metric-value-row">
+            <span class="metric-big-value">3</span>
+            <span class="metric-subtext">Habits tracked this week</span>
+          </div>
+          <span class="metric-badge badge-success"> ✓ All habits active >= 7 days </span>
+        </article>
+      </section>
+
+      <!-- Day-by-Day Distribution Chart -->
+      <section class="chart-card" data-testid="analytics-chart" aria-labelledby="chart-title">
+        <div class="chart-header">
+          <div>
+            <h2 id="chart-title" class="chart-title">Daily Habit Completion Distribution</h2>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-xs)">
+              Habits completed per day across the Monday - Sunday weekly cycle
+            </p>
+          </div>
+          <span style="font-size: var(--font-size-xs); color: var(--color-text-muted)">
+            Target: 100% (3 / 3 habits)
+          </span>
+        </div>
+
+        <!-- Bar Chart -->
+        <div
+          class="bar-chart-container"
+          role="img"
+          aria-label="Bar chart showing daily completions: Mon 100%, Tue 100%, Wed 67%, Thu 67%, Fri 67%, Sat 33%, Sun 33%"
+        >
+          <!-- Mon (3/3 = 100%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">100%</span>
+              <div class="bar-fill highlight" style="height: 100%"></div>
+            </div>
+            <span class="bar-label">Mon</span>
+            <span class="bar-sublabel">3 / 3</span>
+          </div>
+
+          <!-- Tue (3/3 = 100% Best Day) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">100%</span>
+              <div class="bar-fill highlight" style="height: 100%"></div>
+            </div>
+            <span class="bar-label" style="color: var(--color-success); font-weight: bold"
+              >Tue ★</span
+            >
+            <span class="bar-sublabel">3 / 3</span>
+          </div>
+
+          <!-- Wed (2/3 = 67%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">67%</span>
+              <div class="bar-fill" style="height: 67%"></div>
+            </div>
+            <span class="bar-label">Wed</span>
+            <span class="bar-sublabel">2 / 3</span>
+          </div>
+
+          <!-- Thu (2/3 = 67%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">67%</span>
+              <div class="bar-fill" style="height: 67%"></div>
+            </div>
+            <span class="bar-label">Thu</span>
+            <span class="bar-sublabel">2 / 3</span>
+          </div>
+
+          <!-- Fri (2/3 = 67%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">67%</span>
+              <div class="bar-fill" style="height: 67%"></div>
+            </div>
+            <span class="bar-label">Fri</span>
+            <span class="bar-sublabel">2 / 3</span>
+          </div>
+
+          <!-- Sat (1/3 = 33%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">33%</span>
+              <div class="bar-fill" style="height: 33%"></div>
+            </div>
+            <span class="bar-label">Sat</span>
+            <span class="bar-sublabel">1 / 3</span>
+          </div>
+
+          <!-- Sun (1/3 = 33%) -->
+          <div class="bar-column">
+            <div class="bar-track">
+              <span class="bar-rate-tag">33%</span>
+              <div class="bar-fill" style="height: 33%"></div>
+            </div>
+            <span class="bar-label">Sun</span>
+            <span class="bar-sublabel">1 / 3</span>
+          </div>
+        </div>
+
+        <!-- Category Adherence Breakdown -->
+        <div class="category-section" aria-label="Category Adherence Breakdown">
+          <div class="category-card">
+            <div class="category-card-header">
+              <span>Health</span>
+              <span style="color: var(--color-success)">86% (6 / 7)</span>
+            </div>
+            <div class="category-progress">
+              <div class="category-progress-bar" style="width: 86%"></div>
+            </div>
+          </div>
+
+          <div class="category-card">
+            <div class="category-card-header">
+              <span>Fitness</span>
+              <span style="color: var(--color-primary)">71% (5 / 7)</span>
+            </div>
+            <div class="category-progress">
+              <div class="category-progress-bar" style="width: 71%"></div>
+            </div>
+          </div>
+
+          <div class="category-card">
+            <div class="category-card-header">
+              <span>Learning</span>
+              <span style="color: var(--color-warning)">43% (3 / 7)</span>
+            </div>
+            <div class="category-progress">
+              <div class="category-progress-bar" style="width: 43%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty State Fallback -->
+      <div class="empty-state" data-testid="empty-state-analytics" aria-hidden="true">
+        <h3>No Weekly Data Yet</h3>
+        <p style="color: var(--color-text-secondary)">
+          Log your first habit completion to unlock weekly performance analytics.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

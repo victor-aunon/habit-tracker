@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-18",
+  "summary": {
+    "totalHabits": 4,
+    "completedToday": 2,
+    "pendingToday": 2,
+    "completionRateToday": 50,
+    "activeStreakCount": 3
+  },
+  "habits": [
+    {
+      "id": "habit-1",
+      "title": "Drink 2L Water",
+      "description": "Stay hydrated throughout the working day",
+      "category": "Health",
+      "createdAt": "2026-11-01T08:00:00.000Z",
+      "isActive": true,
+      "isCompletedToday": true,
+      "streak": {
+        "currentStreak": 5,
+        "bestStreak": 14,
+        "lastCompletedDate": "2026-11-18",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "id": "habit-2",
+      "title": "Morning 20m Run",
+      "description": "Outdoor cardio or treadmill jog",
+      "category": "Fitness",
+      "createdAt": "2026-11-05T07:15:00.000Z",
+      "isActive": true,
+      "isCompletedToday": true,
+      "streak": {
+        "currentStreak": 12,
+        "bestStreak": 21,
+        "lastCompletedDate": "2026-11-18",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "id": "habit-3",
+      "title": "Read 15 Pages of Book",
+      "description": "Technical architecture or fiction reading",
+      "category": "Learning",
+      "createdAt": "2026-11-10T21:00:00.000Z",
+      "isActive": true,
+      "isCompletedToday": false,
+      "streak": {
+        "currentStreak": 3,
+        "bestStreak": 8,
+        "lastCompletedDate": "2026-11-17",
+        "status": "PENDING_TODAY"
+      }
+    },
+    {
+      "id": "habit-4",
+      "title": "Meditate 10 Minutes",
+      "description": "Mindfulness breathing session",
+      "category": "Mindfulness",
+      "createdAt": "2026-11-18T09:00:00.000Z",
+      "isActive": true,
+      "isCompletedToday": false,
+      "streak": {
+        "currentStreak": 0,
+        "bestStreak": 4,
+        "lastCompletedDate": null,
+        "status": "UNSTARTED"
+      }
+    }
+  ]
+}

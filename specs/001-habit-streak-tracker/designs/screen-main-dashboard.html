@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Habit & Streak Tracker - Dashboard</title>
+    <link rel="stylesheet" href="./tokens.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Top Navigation Header */
+      .header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4) var(--space-8);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        text-decoration: none;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        list-style: none;
+      }
+
+      .nav-link {
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        transition:
+          background-color var(--transition-fast),
+          color var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      .nav-link.active {
+        background-color: var(--color-primary-subtle);
+        color: var(--color-primary);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .timestamp-badge {
+        font-size: var(--font-size-xs);
+        font-family: var(--font-family-mono);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border-subtle);
+      }
+
+      /* Main Container */
+      main {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+      }
+
+      /* Dashboard Header Section */
+      .dashboard-hero {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        padding-bottom: var(--space-6);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .hero-title-group h1 {
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -0.02em;
+        margin-bottom: var(--space-1);
+      }
+
+      .hero-subtitle {
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-base);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-sm);
+        cursor: pointer;
+        border: none;
+        transition: all var(--transition-fast);
+        text-decoration: none;
+      }
+
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-focus);
+      }
+
+      .btn-primary {
+        background-color: var(--color-primary);
+        color: var(--color-primary-foreground);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--color-primary-hover);
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+      }
+
+      .btn-ghost:hover {
+        background-color: var(--color-surface-hover);
+        color: var(--color-text);
+      }
+
+      .btn-icon-danger {
+        background-color: transparent;
+        color: var(--color-text-muted);
+        border: none;
+        padding: var(--space-2);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition:
+          color var(--transition-fast),
+          background-color var(--transition-fast);
+      }
+
+      .btn-icon-danger:hover {
+        color: var(--color-danger);
+        background-color: var(--color-danger-subtle);
+      }
+
+      /* Metrics Bar */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--space-4);
+      }
+
+      .summary-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .summary-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+      }
+
+      .summary-value {
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-2);
+      }
+
+      .summary-subtext {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background-color: var(--color-surface-elevated);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        margin-top: var(--space-2);
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+        border-radius: var(--radius-full);
+        width: 50%;
+      }
+
+      /* Habit List Section */
+      .habits-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .section-title {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .habits-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+
+      /* Habit Card */
+      .habit-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        transition:
+          border-color var(--transition-fast),
+          background-color var(--transition-fast),
+          transform var(--transition-fast);
+      }
+
+      .habit-card:hover {
+        border-color: var(--color-primary);
+        background-color: var(--color-surface-hover);
+        transform: translateY(-1px);
+      }
+
+      .habit-card.completed {
+        border-color: var(--color-border-subtle);
+        background-color: var(--color-surface-subtle);
+      }
+
+      .habit-card-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        flex: 1;
+      }
+
+      /* Toggle Button Checkmark */
+      .toggle-button {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-full);
+        border: 2px solid var(--color-border);
+        background-color: transparent;
+        color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: var(--font-size-lg);
+        transition: all var(--transition-fast);
+        flex-shrink: 0;
+      }
+
+      .toggle-button:hover {
+        border-color: var(--color-success);
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+      }
+
+      .toggle-button.completed {
+        background-color: var(--color-success);
+        border-color: var(--color-success);
+        color: var(--color-success-foreground);
+      }
+
+      .habit-details {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+
+      .habit-title {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text);
+        transition: color var(--transition-fast);
+      }
+
+      .habit-card.completed .habit-title {
+        color: var(--color-text-secondary);
+        text-decoration: line-through;
+      }
+
+      .habit-meta {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+      }
+
+      .category-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: var(--radius-sm);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border-subtle);
+      }
+
+      .habit-card-right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+
+      /* Streak Badges */
+      .streak-container {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .streak-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        font-family: var(--font-family-mono);
+      }
+
+      .streak-current {
+        background-color: var(--color-streak-fire-subtle);
+        color: var(--color-streak-fire);
+        border: 1px solid rgba(249, 115, 22, 0.3);
+      }
+
+      .streak-best {
+        background-color: var(--color-streak-gold-subtle);
+        color: var(--color-streak-gold);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+      }
+
+      /* Empty State Card */
+      .empty-state {
+        display: none; /* Shown dynamically when list is empty */
+        background-color: var(--color-surface);
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-12) var(--space-8);
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-4);
+      }
+
+      .empty-state-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: var(--radius-full);
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--font-size-3xl);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="header" role="banner">
+      <div class="header-container">
+        <a href="/" class="brand" aria-label="HabitPulse Dashboard Home">
+          <div class="brand-icon" aria-hidden="true">⚡</div>
+          <span>HabitPulse</span>
+        </a>
+
+        <nav aria-label="Main Navigation">
+          <ul class="nav-links">
+            <li><a href="/" class="nav-link active" aria-current="page">Dashboard</a></li>
+            <li><a href="/calendar" class="nav-link">Calendar</a></li>
+            <li><a href="/analytics" class="nav-link">Analytics</a></li>
+            <li><a href="/habits/manage" class="nav-link">Manage</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <span class="timestamp-badge" data-testid="current-timestamp"
+            >Wednesday, Nov 18, 2026</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Viewport -->
+    <main data-testid="main-dashboard" role="main">
+      <!-- Hero Header with Date and Quick Actions -->
+      <section class="dashboard-hero" aria-labelledby="dashboard-heading">
+        <div class="hero-title-group">
+          <h1 id="dashboard-heading">Today's Habits</h1>
+          <p class="hero-subtitle">
+            Wednesday, November 18, 2026 · Keep your streak momentum going
+          </p>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-testid="habit-create-button"
+            aria-haspopup="dialog"
+          >
+            <span aria-hidden="true">+</span> Add Habit
+          </button>
+        </div>
+      </section>
+
+      <!-- Daily Performance Summary KPI Cards -->
+      <section class="summary-grid" aria-label="Daily Habit Statistics">
+        <article class="summary-card">
+          <span class="summary-label">Today's Progress</span>
+          <div class="summary-value">
+            <span>2 / 4</span>
+            <span class="summary-subtext">(50% Completed)</span>
+          </div>
+          <div
+            class="progress-bar-container"
+            role="progressbar"
+            aria-valuenow="50"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <div class="progress-bar-fill"></div>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <span class="summary-label">Active Streaks</span>
+          <div class="summary-value">
+            <span>3 Habits</span>
+          </div>
+          <span class="summary-subtext">Longest current streak: 12 days</span>
+        </article>
+
+        <article class="summary-card">
+          <span class="summary-label">Consistency Status</span>
+          <div class="summary-value" style="color: var(--color-success)">
+            <span>On Track</span>
+          </div>
+          <span class="summary-subtext">2 habits remaining for today</span>
+        </article>
+      </section>
+
+      <!-- Active Habits List -->
+      <section class="habits-section" aria-labelledby="habits-section-heading">
+        <div class="section-header">
+          <h2 id="habits-section-heading" class="section-title">Active Daily Habits</h2>
+          <span class="summary-subtext">Click checkmark to toggle completion</span>
+        </div>
+
+        <div class="habits-list" role="list">
+          <!-- Habit 1: Completed Today -->
+          <article class="habit-card completed" data-testid="habit-card" role="listitem">
+            <div class="habit-card-left">
+              <button
+                type="button"
+                class="toggle-button completed"
+                data-testid="habit-toggle-button"
+                aria-label="Toggle Drink 2L Water as incomplete"
+                aria-pressed="true"
+              >
+                ✓
+              </button>
+              <div class="habit-details">
+                <span class="habit-title" data-testid="habit-title">Drink 2L Water</span>
+                <div class="habit-meta">
+                  <span class="category-badge">Health</span>
+                  <span>Stay hydrated throughout the working day</span>
+                </div>
+              </div>
+            </div>
+            <div class="habit-card-right">
+              <div class="streak-container">
+                <span
+                  class="streak-badge streak-current"
+                  data-testid="streak-current-badge"
+                  title="Current consecutive streak"
+                >
+                  🔥 5d streak
+                </span>
+                <span
+                  class="streak-badge streak-best"
+                  data-testid="streak-best-badge"
+                  title="Best all-time streak"
+                >
+                  🏆 Best: 14d
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-icon-danger"
+                data-testid="habit-delete-button"
+                aria-label="Delete habit Drink 2L Water"
+              >
+                🗑️
+              </button>
+            </div>
+          </article>
+
+          <!-- Habit 2: Completed Today -->
+          <article class="habit-card completed" data-testid="habit-card" role="listitem">
+            <div class="habit-card-left">
+              <button
+                type="button"
+                class="toggle-button completed"
+                data-testid="habit-toggle-button"
+                aria-label="Toggle Morning 20m Run as incomplete"
+                aria-pressed="true"
+              >
+                ✓
+              </button>
+              <div class="habit-details">
+                <span class="habit-title" data-testid="habit-title">Morning 20m Run</span>
+                <div class="habit-meta">
+                  <span class="category-badge">Fitness</span>
+                  <span>Outdoor cardio or treadmill jog</span>
+                </div>
+              </div>
+            </div>
+            <div class="habit-card-right">
+              <div class="streak-container">
+                <span
+                  class="streak-badge streak-current"
+                  data-testid="streak-current-badge"
+                  title="Current consecutive streak"
+                >
+                  🔥 12d streak
+                </span>
+                <span
+                  class="streak-badge streak-best"
+                  data-testid="streak-best-badge"
+                  title="Best all-time streak"
+                >
+                  🏆 Best: 21d
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-icon-danger"
+                data-testid="habit-delete-button"
+                aria-label="Delete habit Morning 20m Run"
+              >
+                🗑️
+              </button>
+            </div>
+          </article>
+
+          <!-- Habit 3: Incomplete Today (Pending) -->
+          <article class="habit-card" data-testid="habit-card" role="listitem">
+            <div class="habit-card-left">
+              <button
+                type="button"
+                class="toggle-button"
+                data-testid="habit-toggle-button"
+                aria-label="Toggle Read 15 Pages of Book as completed"
+                aria-pressed="false"
+              ></button>
+              <div class="habit-details">
+                <span class="habit-title" data-testid="habit-title">Read 15 Pages of Book</span>
+                <div class="habit-meta">
+                  <span class="category-badge">Learning</span>
+                  <span>Technical architecture or fiction reading</span>
+                </div>
+              </div>
+            </div>
+            <div class="habit-card-right">
+              <div class="streak-container">
+                <span
+                  class="streak-badge streak-current"
+                  data-testid="streak-current-badge"
+                  title="Current consecutive streak"
+                >
+                  🔥 3d streak
+                </span>
+                <span
+                  class="streak-badge streak-best"
+                  data-testid="streak-best-badge"
+                  title="Best all-time streak"
+                >
+                  🏆 Best: 8d
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-icon-danger"
+                data-testid="habit-delete-button"
+                aria-label="Delete habit Read 15 Pages of Book"
+              >
+                🗑️
+              </button>
+            </div>
+          </article>
+
+          <!-- Habit 4: Incomplete Today (Unstarted) -->
+          <article class="habit-card" data-testid="habit-card" role="listitem">
+            <div class="habit-card-left">
+              <button
+                type="button"
+                class="toggle-button"
+                data-testid="habit-toggle-button"
+                aria-label="Toggle Meditate 10 Minutes as completed"
+                aria-pressed="false"
+              ></button>
+              <div class="habit-details">
+                <span class="habit-title" data-testid="habit-title">Meditate 10 Minutes</span>
+                <div class="habit-meta">
+                  <span class="category-badge">Mindfulness</span>
+                  <span>Mindfulness breathing session</span>
+                </div>
+              </div>
+            </div>
+            <div class="habit-card-right">
+              <div class="streak-container">
+                <span
+                  class="streak-badge streak-current"
+                  data-testid="streak-current-badge"
+                  title="Current consecutive streak"
+                >
+                  ⚡ 0d streak
+                </span>
+                <span
+                  class="streak-badge streak-best"
+                  data-testid="streak-best-badge"
+                  title="Best all-time streak"
+                >
+                  🏆 Best: 4d
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-icon-danger"
+                data-testid="habit-delete-button"
+                aria-label="Delete habit Meditate 10 Minutes"
+              >
+                🗑️
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Empty State Fallback -->
+        <div class="empty-state" data-testid="empty-state-dashboard" aria-hidden="true">
+          <div class="empty-state-icon">📋</div>
+          <h3>No Habits Tracked Yet</h3>
+          <p class="hero-subtitle">
+            Start building lasting habits by creating your first daily routine.
+          </p>
+          <button type="button" class="btn btn-primary" data-testid="habit-create-button-empty">
+            Create Your First Habit
+          </button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

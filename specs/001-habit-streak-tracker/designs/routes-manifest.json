@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Mapping of Daily Habit & Streak Tracker Stitch screens and UI components to local Playwright routes",
+  "screens": [
+    {
+      "id": "screen-main-dashboard",
+      "name": "Habit Tracker Dashboard",
+      "route": "/",
+      "selector": "main[data-testid='main-dashboard']",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "waitForSelector": "[data-testid='habit-card']",
+      "maskSelectors": ["[data-testid='current-timestamp']"],
+      "fixtures": {
+        "/api/v1/dashboard": "./fixtures/dashboard.json",
+        "/api/v1/habits": "./fixtures/habits.json"
+      }
+    },
+    {
+      "id": "screen-calendar-history",
+      "name": "Monthly Calendar History",
+      "route": "/calendar",
+      "selector": "main[data-testid='calendar-view']",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "waitForSelector": "[data-testid='calendar-grid']",
+      "maskSelectors": ["[data-testid='current-timestamp']"],
+      "fixtures": {
+        "/api/v1/calendar": "./fixtures/calendar.json"
+      }
+    },
+    {
+      "id": "screen-weekly-analytics",
+      "name": "Weekly Performance Analytics",
+      "route": "/analytics",
+      "selector": "main[data-testid='analytics-view']",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "waitForSelector": "[data-testid='analytics-chart']",
+      "maskSelectors": ["[data-testid='current-timestamp']"],
+      "fixtures": {
+        "/api/v1/analytics": "./fixtures/analytics.json"
+      }
+    },
+    {
+      "id": "screen-habit-management",
+      "name": "Habit Creation & Safeguards Modal",
+      "route": "/habits/manage",
+      "selector": "main[data-testid='management-view']",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "waitForSelector": "[data-testid='habit-input-title']",
+      "maskSelectors": ["[data-testid='current-timestamp']"],
+      "fixtures": {
+        "/api/v1/habits": "./fixtures/habits.json"
+      }
+    }
+  ]
+}
