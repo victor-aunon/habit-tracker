@@ -86,7 +86,7 @@ Every feature and bug fix is safeguarded by automated tests:
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd workflow-test
+cd habit-tracker
 
 # Install dependencies
 npm install
