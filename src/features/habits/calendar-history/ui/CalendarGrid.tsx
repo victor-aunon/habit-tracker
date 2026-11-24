@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { DayCompletionStatus } from '../domain/DayCompletionStatus';
+import type { Habit } from '../../tracking/domain/Habit';
 import { CalendarHeader } from './CalendarHeader';
 import { CalendarDayCell } from './CalendarDayCell';
 import { DayDetailInspection } from './DayDetailInspection';
@@ -17,6 +18,8 @@ export interface CalendarGridProps {
   readonly onNextMonth?: () => void;
   readonly onToday?: () => void;
   readonly isLoading?: boolean;
+  readonly onToggleHabit?: (habitId: string, date: string) => void;
+  readonly activeHabits?: Habit[];
 }
 
 const WEEKDAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -31,6 +34,8 @@ export function CalendarGrid({
   onNextMonth = () => {},
   onToday = () => {},
   isLoading = false,
+  onToggleHabit,
+  activeHabits,
 }: CalendarGridProps) {
   const [internalSelected, setInternalSelected] = useState<string | null>(selectedDate);
 
@@ -98,6 +103,8 @@ export function CalendarGrid({
                 date={selectedDayStatus.date}
                 dayStatus={selectedDayStatus}
                 onClose={handleCloseDetail}
+                onToggleHabit={onToggleHabit}
+                activeHabits={activeHabits}
               />
             ) : (
               <div className="flex min-h-56 flex-col items-center justify-center rounded-2xl border border-border bg-surface-subtle p-6 text-center text-text-muted">

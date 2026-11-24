@@ -26,6 +26,7 @@ export function useHabitAppState() {
   const [isLoading, setIsLoading] = useState(true);
 
   const today = localDateToday();
+  const [selectedDashboardDate, setSelectedDashboardDate] = useState<string>(today);
   const [calYear, setCalYear] = useState(() => Number.parseInt(today.slice(0, 4), 10));
   const [calMonth, setCalMonth] = useState(() => Number.parseInt(today.slice(5, 7), 10));
   const [calendarDays, setCalendarDays] = useState<DayCompletionStatus[]>([]);
@@ -46,7 +47,7 @@ export function useHabitAppState() {
 
       const compMap = new Map<string, boolean>();
       for (const h of activeHabits) {
-        const done = await habitService.isHabitCompletedToday(h.id);
+        const done = await habitService.isHabitCompleted(h.id, selectedDashboardDate);
         compMap.set(h.id, done);
       }
       setCompletionMap(compMap);
@@ -61,7 +62,7 @@ export function useHabitAppState() {
     } finally {
       setIsLoading(false);
     }
-  }, [calYear, calMonth, analyticsRefDate]);
+  }, [calYear, calMonth, analyticsRefDate, selectedDashboardDate]);
 
   useEffect(() => {
     void refreshData();
@@ -78,29 +79,39 @@ export function useHabitAppState() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const handleToggleHabit = async (habitId: string) => {
-    const wasCompleted = completionMap.get(habitId) ?? false;
+  const handleToggleHabit = async (habitId: string, targetDate?: string) => {
+    const dateToToggle = targetDate ?? selectedDashboardDate;
+    const isToday = dateToToggle === today;
+    const wasCompleted = await habitService.isHabitCompleted(habitId, dateToToggle);
     const habit = habits.find((h) => h.id === habitId);
     const streak = streaks.get(habitId);
 
-    const res = await habitService.toggleCompletion({ habitId });
+    const res = await habitService.toggleCompletion({ habitId, date: dateToToggle });
     if (!res.success && res.isRetainedInMemory) {
       setToastMessage(res.error?.message ?? 'Storage limit reached. Toggled in memory.');
     } else if (!wasCompleted && habit) {
-      const newStreak = (streak?.currentStreak ?? 0) + 1;
-      const milestone = resolveStreakMilestone(newStreak, habit.title);
+      if (isToday) {
+        const newStreak = (streak?.currentStreak ?? 0) + 1;
+        const milestone = resolveStreakMilestone(newStreak, habit.title);
 
-      if (milestone.celebrationMessage) {
-        setToastMessage(milestone.celebrationMessage);
-      } else {
-        const allCompletedNow = habits.every((h) =>
-          h.id === habitId ? true : completionMap.get(h.id) === true,
-        );
-        if (habits.length > 1 && allCompletedNow) {
-          setToastMessage('🎉 Perfect Day! All habits completed today.');
+        if (milestone.celebrationMessage) {
+          setToastMessage(milestone.celebrationMessage);
         } else {
-          setToastMessage(`✨ Habit completed! ${habit.title} added to your consistency.`);
+          const allCompletedNow = habits.every((h) =>
+            h.id === habitId ? true : completionMap.get(h.id) === true,
+          );
+          if (habits.length > 1 && allCompletedNow) {
+            setToastMessage('🎉 Perfect Day! All habits completed today.');
+          } else {
+            setToastMessage(`✨ Habit completed! ${habit.title} added to your consistency.`);
+          }
         }
+      } else {
+        setToastMessage(`✨ Habit ${habit.title} completed for ${dateToToggle}.`);
+      }
+    } else if (wasCompleted && habit) {
+      if (!isToday) {
+        setToastMessage(`Marked ${habit.title} as incomplete for ${dateToToggle}.`);
       }
     }
     await refreshData();
@@ -221,6 +232,8 @@ export function useHabitAppState() {
     streaks,
     completionMap,
     isLoading,
+    selectedDashboardDate,
+    setSelectedDashboardDate,
     calYear,
     calMonth,
     calendarDays,

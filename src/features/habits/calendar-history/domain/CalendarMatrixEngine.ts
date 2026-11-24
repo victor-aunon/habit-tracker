@@ -50,13 +50,14 @@ export function generateMonthlyMatrix({
     const isCurrentMonth = cellMonth === month;
     const isFuture = isFutureDate(cellDate, refDate);
 
-    // Habits active on this calendar date (only habits created on or before this date)
+    const completedHabitIds = new Set(completionMap.get(cellDate) ?? []);
+
+    // Habits active on this calendar date (habits created on/before this date OR completed on this date)
     const trackedHabits = activeHabits.filter((h) => {
       const createdDate = h.createdAt ? h.createdAt.slice(0, 10) : '';
-      return Boolean(createdDate) && createdDate <= cellDate;
+      return (Boolean(createdDate) && createdDate <= cellDate) || completedHabitIds.has(h.id);
     });
 
-    const completedHabitIds = new Set(completionMap.get(cellDate) ?? []);
     const habitBreakdown: HabitDayDetail[] = trackedHabits.map((h) => ({
       habitId: h.id,
       title: h.title,

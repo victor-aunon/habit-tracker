@@ -68,4 +68,28 @@ describe('HabitTrackingService', () => {
     const isDoneAfter = await service.isHabitCompletedToday(habitId);
     expect(isDoneAfter).toBe(false);
   });
+
+  it('toggles and queries completion for any specified calendar date', async () => {
+    const createResult = await service.createHabit({ title: 'Yoga' });
+    const habitId = createResult.data!.id;
+    const targetDate = '2026-11-10';
+
+    // Verify initially not completed on targetDate
+    expect(await service.isHabitCompleted(habitId, targetDate)).toBe(false);
+
+    // Toggle on for targetDate
+    const toggleOn = await service.toggleCompletion({ habitId, date: targetDate });
+    expect(toggleOn.success).toBe(true);
+    expect(toggleOn.data).toBe(true);
+    expect(await service.isHabitCompleted(habitId, targetDate)).toBe(true);
+
+    // Verify today is not affected
+    expect(await service.isHabitCompletedToday(habitId)).toBe(false);
+
+    // Toggle off for targetDate
+    const toggleOff = await service.toggleCompletion({ habitId, date: targetDate });
+    expect(toggleOff.success).toBe(true);
+    expect(toggleOff.data).toBe(false);
+    expect(await service.isHabitCompleted(habitId, targetDate)).toBe(false);
+  });
 });

@@ -106,4 +106,34 @@ describe('Calendar Navigation & Day Inspection Integration', () => {
     expect(screen.getByTestId('day-detail-panel')).toBeDefined();
     expect(screen.getByText('Drink Water')).toBeDefined();
   });
+
+  it('allows toggling habit completion status directly from day detail inspection panel', () => {
+    const onToggleHabit = vi.fn();
+
+    render(
+      <CalendarGrid
+        year={2026}
+        month={11}
+        days={mockDays}
+        selectedDate="2026-11-18"
+        onSelectDate={vi.fn()}
+        onPreviousMonth={vi.fn()}
+        onNextMonth={vi.fn()}
+        onToday={vi.fn()}
+        onToggleHabit={onToggleHabit}
+      />,
+    );
+
+    expect(screen.getByTestId('day-detail-panel')).toBeDefined();
+
+    // Toggle missed habit (h-2) to complete it for 2026-11-18
+    const toggleH2 = screen.getByTestId('toggle-day-habit-h-2');
+    fireEvent.click(toggleH2);
+    expect(onToggleHabit).toHaveBeenCalledWith('h-2', '2026-11-18');
+
+    // Toggle completed habit (h-1) to uncomplete it for 2026-11-18
+    const toggleH1 = screen.getByTestId('toggle-day-habit-h-1');
+    fireEvent.click(toggleH1);
+    expect(onToggleHabit).toHaveBeenCalledWith('h-1', '2026-11-18');
+  });
 });

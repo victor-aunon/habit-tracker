@@ -53,6 +53,8 @@ export function App() {
             onNextMonth={state.handleNextMonth}
             onToday={state.handleCalToday}
             isLoading={state.isLoading}
+            onToggleHabit={state.handleToggleHabit}
+            activeHabits={state.habits}
           />
         </Suspense>
       ) : state.route === '/analytics' ? (
@@ -74,6 +76,8 @@ export function App() {
           onDeleteHabit={state.handleDeleteHabit}
           onOpenCreateModal={() => state.setIsCreateModalOpen(true)}
           newlyCreatedHabitId={state.newlyCreatedHabitId}
+          selectedDate={state.selectedDashboardDate}
+          onSelectDate={state.setSelectedDashboardDate}
         />
       )}
 

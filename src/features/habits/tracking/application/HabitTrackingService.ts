@@ -67,6 +67,10 @@ export class HabitTrackingService implements IHabitTrackingService {
 
   public async isHabitCompletedToday(habitId: string): Promise<boolean> {
     const today = localDateToday();
-    return this.completionRepo.isCompleted(habitId, today);
+    return this.isHabitCompleted(habitId, today);
+  }
+
+  public async isHabitCompleted(habitId: string, date: string): Promise<boolean> {
+    return this.completionRepo.isCompleted(habitId, date);
   }
 }

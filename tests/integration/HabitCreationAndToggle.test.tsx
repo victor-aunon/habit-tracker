@@ -137,4 +137,63 @@ describe('Habit Creation & Daily Toggle Integration', () => {
     expect(newBadge).toBeDefined();
     expect(newBadge.textContent).toContain('NEW');
   });
+
+  it('navigates dates and toggles completion for any selected date on dashboard', () => {
+    const habit = createHabit({ id: 'h-1', title: 'Read Book', category: 'learning' });
+    const onToggle = vi.fn();
+    const onSelectDate = vi.fn();
+
+    const { rerender } = render(
+      <HabitList
+        habits={[habit]}
+        streaks={new Map()}
+        completionMap={new Map([['h-1', false]])}
+        isLoading={false}
+        onToggleHabit={onToggle}
+        onDeleteHabit={vi.fn()}
+        onOpenCreateModal={vi.fn()}
+        selectedDate="2026-11-15"
+        onSelectDate={onSelectDate}
+      />,
+    );
+
+    // Verify header reflects selected date
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading.textContent).toContain('2026-11-15');
+
+    // Previous day navigation
+    const prevBtn = screen.getByTestId('prev-day-btn');
+    fireEvent.click(prevBtn);
+    expect(onSelectDate).toHaveBeenCalledWith('2026-11-14');
+
+    // Next day navigation
+    const nextBtn = screen.getByTestId('next-day-btn');
+    fireEvent.click(nextBtn);
+    expect(onSelectDate).toHaveBeenCalledWith('2026-11-16');
+
+    // Toggle on selected date passes habitId and selectedDate
+    const toggleBtn = screen.getByTestId('habit-toggle-button');
+    fireEvent.click(toggleBtn);
+    expect(onToggle).toHaveBeenCalledWith('h-1', '2026-11-15');
+
+    // Today button jumps back to today
+    const todayBtn = screen.getByTestId('dashboard-today-btn');
+    fireEvent.click(todayBtn);
+    expect(onSelectDate).toHaveBeenCalled();
+
+    // Rerender with today
+    rerender(
+      <HabitList
+        habits={[habit]}
+        streaks={new Map()}
+        completionMap={new Map([['h-1', false]])}
+        isLoading={false}
+        onToggleHabit={onToggle}
+        onDeleteHabit={vi.fn()}
+        onOpenCreateModal={vi.fn()}
+      />,
+    );
+    const todayHeading = screen.getByRole('heading', { level: 1 });
+    expect(todayHeading.textContent).toBe("Today's Habits");
+  });
 });

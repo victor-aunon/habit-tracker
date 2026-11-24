@@ -36,6 +36,7 @@ export interface IHabitTrackingService {
   toggleCompletion(command: ToggleCompletionCommand): Promise<StorageOperationResult<boolean>>;
   deleteHabit(command: DeleteHabitCommand): Promise<StorageOperationResult<boolean>>;
   isHabitCompletedToday(habitId: string): Promise<boolean>;
+  isHabitCompleted(habitId: string, date: string): Promise<boolean>;
 }
 
 /**

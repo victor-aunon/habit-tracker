@@ -136,4 +136,30 @@ describe('CalendarMatrixEngine', () => {
     expect(day16?.status).toBe('NONE_COMPLETED');
     expect(day16?.totalHabitsTracked).toBe(2);
   });
+
+  it('includes habits with backdated completions even if cellDate is before createdAt', () => {
+    // Habit created on Nov 20, but marked complete on Nov 18
+    const habit = createHabit({
+      id: 'h-backdated',
+      title: 'Backdated Habit',
+      createdAt: '2026-11-20T10:00:00.000Z',
+    });
+    const completionMap = new Map<string, string[]>();
+    completionMap.set('2026-11-18', ['h-backdated']);
+
+    const matrix = generateMonthlyMatrix({
+      year: 2026,
+      month: 11,
+      activeHabits: [habit],
+      completionMap,
+      referenceDate: '2026-11-20',
+    });
+
+    const day18 = matrix.find((d) => d.date === '2026-11-18');
+    expect(day18?.status).toBe('ALL_COMPLETED');
+    expect(day18?.completedCount).toBe(1);
+    expect(day18?.totalHabitsTracked).toBe(1);
+    expect(day18?.habitBreakdown).toHaveLength(1);
+    expect(day18?.habitBreakdown[0].isCompleted).toBe(true);
+  });
 });
